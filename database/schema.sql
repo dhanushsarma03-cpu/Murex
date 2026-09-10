@@ -1,0 +1,6 @@
+CREATE TABLE products (product_id SERIAL PRIMARY KEY, product_code VARCHAR(30) UNIQUE NOT NULL, product_name VARCHAR(100) NOT NULL, asset_class VARCHAR(40) NOT NULL);
+CREATE TABLE counterparties (counterparty_id SERIAL PRIMARY KEY, counterparty_code VARCHAR(30) UNIQUE NOT NULL, counterparty_name VARCHAR(120) NOT NULL, credit_rating VARCHAR(10));
+CREATE TABLE trades (trade_id BIGSERIAL PRIMARY KEY, trade_reference VARCHAR(40) UNIQUE NOT NULL, product_id INT REFERENCES products(product_id), counterparty_id INT REFERENCES counterparties(counterparty_id), trade_date DATE NOT NULL, value_date DATE, currency VARCHAR(10), notional NUMERIC(20,2), price NUMERIC(20,8), status VARCHAR(20) NOT NULL DEFAULT 'NEW', pnl NUMERIC(20,2) DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE market_data (market_data_id BIGSERIAL PRIMARY KEY, instrument VARCHAR(40) NOT NULL, quote_value NUMERIC(20,8) NOT NULL, quote_change NUMERIC(12,6), as_of TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE issues (issue_id BIGSERIAL PRIMARY KEY, title VARCHAR(200) NOT NULL, severity VARCHAR(20), status VARCHAR(20) DEFAULT 'OPEN', module VARCHAR(50), expected_result TEXT, actual_result TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE INDEX idx_trades_status ON trades(status); CREATE INDEX idx_market_instrument ON market_data(instrument);
